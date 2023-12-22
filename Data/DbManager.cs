@@ -113,7 +113,7 @@ internal class DbManager
         Console.ReadKey();
     }
 
-    public void GetAllStudentsSorted(MenuChoice choice)
+    public void GetAllStudentsSorted(MenuChoice choice) //optimize this
     {
         var listStudents = Context.Students
             .Include(s => s.FkClass)
