@@ -8,6 +8,10 @@ internal class DbManager
 {
     public Net23schoolContext Context { get; set; } = new();
 
+    //private DbManager DbM = new();
+    //add instance of AccountCreation, dbm.
+    //clean up static methods to non static.
+
     public List<string> GetAllClasses()
     {
         var classes = Context.Classes
@@ -17,8 +21,18 @@ internal class DbManager
         return classes;
     }
 
-    public void GetClassInfo(string className)
+    public List<string> GetAllEmployeeRoles() //work in progress, use with AccountCreation CreateEmployee()
     {
+        var roles = Context.Roles
+            .Select(c => c.Title)
+            .ToList();
+
+        return roles;
+    }
+
+    public void GetClassInfo()
+    {
+        var className = UserInterface.ClassMenu(GetAllClasses());
         var classInfo = Context.Students
             .Include(c => c.FkClass)
             .Where(c => c.FkClass.ClassName == className)
@@ -34,8 +48,9 @@ internal class DbManager
         Console.ReadKey();
     }
 
-    public void GetGrades()
+    public void GetGrades() //lägg till aktiv/inaktiv
     {
+        var menuSelection = UserInterface.CourseMenu();
         var courses = Context.Courses
             .Include(c => c.Grades)
             .ToList();
@@ -48,12 +63,25 @@ internal class DbManager
                 LowGrade = c.Grades.Min(t => t.Grade1),
                 AverageGrade = c.Grades.Average(t => GetAverageGrade(t.Grade1))
             }).ToList();
-            
-        AnsiConsole.WriteLine("Course summary:\n");
-        foreach (var g in grades)
+
+        switch (menuSelection)
         {
-            AnsiConsole.WriteLine($"Course: {g.Course} \nGrades: Top [{g.TopGrade}] Low [{g.LowGrade}] Avg [{g.AverageGrade}]\n");
+            case "All":
+                AnsiConsole.WriteLine("Course summary:\n");
+                foreach (var g in grades)
+                {
+                    AnsiConsole.WriteLine($"Course: {g.Course} \nGrades: Top [{g.TopGrade}] Low [{g.LowGrade}] Avg [{g.AverageGrade}]\n");
+                }
+                break;
+            case "Active":
+                Console.WriteLine("this is active");
+                break;
+            case "Inactive":
+                Console.WriteLine("this is inactive");
+                break;
         }
+
+        
 
         AnsiConsole.WriteLine("\n\nPress any key to continue");
         Console.ReadKey();
@@ -172,10 +200,31 @@ internal class DbManager
         {
             case MenuChoice.CreateStudent:
             {
-                Student student = AccountCreation.CreateStudent();
-                Context.Students.Add(student);
-                Context.SaveChanges();
-                break;
+                var transaction = Context.Database.BeginTransaction();
+                try
+                {
+                    Student student = AccountCreation.CreateStudent();
+                    Context.Students.Add(student);
+                    Context.SaveChanges();
+                    transaction.Commit();
+                    break;
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+
+                    Console.WriteLine(e);
+                    throw;
+
+                }
+
+
+
+
+                //Student student = AccountCreation.CreateStudent();
+                //Context.Students.Add(student);
+                //Context.SaveChanges();
+                //break;
             }
             case MenuChoice.CreateEmployee:
             {

@@ -68,6 +68,28 @@ internal class UserInterface
         return choice;
     }
 
+    public static string CourseMenu()
+    {
+        AnsiConsole.Clear();
+        var choice = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            .Title("Select what courses to view:")
+            .AddChoices(new []
+            {
+                "All", "Active", "Inactive",
+            }));
+        return choice;
+    }
+
+    public static string RoleMenu(List<string> choiceList) //work in progress, use with AccountCreation
+    {
+        AnsiConsole.Clear();
+        var choice = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            .Title("Select role:")
+            .AddChoices(choiceList)
+        );
+        return choice;
+    }
+
     public static MenuChoice CreationMenu()
     {
         AnsiConsole.Clear();

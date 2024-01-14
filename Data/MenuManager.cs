@@ -70,8 +70,7 @@ internal class MenuManager
                     break;
 
                 case MenuChoice.Classes:
-                    var className = UserInterface.ClassMenu(DbM.GetAllClasses());
-                    DbM.GetClassInfo(className);
+                    DbM.GetClassInfo();
                     Choice = MenuChoice.StartMenu;
                     break;
 
