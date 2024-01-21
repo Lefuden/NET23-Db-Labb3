@@ -23,4 +23,7 @@ internal enum MenuChoice
     FirstNameDesc,
     LastNameAsc,
     LastNameDesc,
+    Salary,
+    Departments,
+    AddGrade,
 }

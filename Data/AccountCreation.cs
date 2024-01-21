@@ -3,38 +3,28 @@ using Spectre.Console;
 
 namespace Labb3.Data;
 
-//need to expand to be able to add more info. employee role, student class etc.
-//something weird is happening with the IDs as well, but it's working.
 internal class AccountCreation
 {
-    private static DbManager dbManager = new DbManager();
-    public static Student CreateStudent() //add class
+    private static DbManager dbManager = new();
+    public static Student CreateStudent()
     {
         var (firstName, lastName, socialSecurityNr) = GetInformation();
-        var className = UserInterface.ClassMenu(dbManager.GetAllClasses());
-        //AccountCreation can't access DbM, might have to rethink this.
+        var classId = dbManager.GetClassId();
 
         return new Student
         {
-            //StudentId = null,
             FirstName = firstName,
             LastName = lastName,
             SocialSecurityNr = socialSecurityNr,
-            //FkClassId = null,
-            //FkClass = null,
-            //Grades = null
+            FkClassId = classId,
         };
     }
 
-    public static Employee CreateEmployee() //add EmploymentDate, Salary
+    public static Employee CreateEmployee() 
     {
         while (true)
         {
             var (firstName, lastName, socialSecurityNr) = GetInformation();
-            
-            //var roleTitle = UserInterface.RoleMenu(DbM.GetAllEmployeeRoles());
-            //AccountCreation can't access DbM, might have to rethink this.
-
             var employmentDate = GetValidDate();
             var salary = GetSalary();
 
@@ -48,14 +38,11 @@ internal class AccountCreation
                     AnsiConsole.Clear();
                     return new Employee
                     {
-                        //EmployeeId = 0,
                         FirstName = firstName,
                         LastName = lastName,
                         SocialSecurityNumber = socialSecurityNr,
-                        //Classes = null,
-                        //Grades = null,
-                        //EmploymentDate = employmentDate,
-                        //Salary = salary,
+                        EmploymentDate = employmentDate,
+                        Salary = salary
                     };
                 case false:
                     AnsiConsole.Clear();
@@ -69,7 +56,6 @@ internal class AccountCreation
         while (true)
         {
             AnsiConsole.WriteLine("Enter information");
-
             var firstName = AnsiConsole.Ask<string>("First name:");
             var lastName = AnsiConsole.Ask<string>("Last name:");
             var socialSecurityNr = GetSocialSecurityNr();
@@ -94,12 +80,10 @@ internal class AccountCreation
         while (true)
         {
             var input = AnsiConsole.Ask<string>("Social security number (YYYYMMDDXXXX):");
-            //parse only to check if input is clean, output is not used. expand to validate nr if i have enough time.
             if (input.Length == 12 && ulong.TryParse(input, out var r))
             {
                 return input;
             }
-
             AnsiConsole.WriteLine("Invalid format, try again");
         }
     }
@@ -113,12 +97,11 @@ internal class AccountCreation
             {
                 return input;
             }
-
             AnsiConsole.WriteLine("Invalid format, try again");
         }
     }
 
-    public static DateTime GetValidDate()
+    public static DateOnly GetValidDate()
     {
         while (true)
         {
@@ -129,11 +112,10 @@ internal class AccountCreation
                 input = input.Insert(4, ",");
             }
 
-            if (DateTime.TryParse(input, out DateTime validDateFormat))
+            if (DateOnly.TryParse(input, out var validDateFormat))
             {
                 return validDateFormat;
             }
-
             AnsiConsole.WriteLine("Invalid format, try again");
         }
     }

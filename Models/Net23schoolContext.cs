@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace Labb3.Models;
 
@@ -64,6 +66,9 @@ public partial class Net23schoolContext : DbContext
 
             entity.Property(e => e.FirstName).HasMaxLength(30);
             entity.Property(e => e.LastName).HasMaxLength(30);
+            entity.Property(e => e.Salary)
+                .HasMaxLength(10)
+                .IsFixedLength();
             entity.Property(e => e.SocialSecurityNumber).HasMaxLength(12);
         });
 
@@ -85,7 +90,8 @@ public partial class Net23schoolContext : DbContext
 
         modelBuilder.Entity<EmployeeRole>(entity =>
         {
-            entity.HasNoKey();
+            //entity.HasNoKey();
+            entity.HasKey(er => new { er.FkEmployeeId, er.FkRoleId });
 
             entity.Property(e => e.FkEmployeeId).HasColumnName("FK_EmployeeID");
             entity.Property(e => e.FkRoleId).HasColumnName("FK_RoleID");

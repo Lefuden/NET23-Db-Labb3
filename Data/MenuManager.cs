@@ -41,10 +41,14 @@ internal class MenuManager
                     break;
 
                 case MenuChoice.EmployeeMenu:
+                    Choice = UserInterface.EmployeeMenu();
+                    break;
+
+                case MenuChoice.Departments:
                     Choice = UserInterface.ViewEmployeesMenu();
                     break;
 
-                case MenuChoice.All:
+                case MenuChoice.All: //fix these?
                     DbM.GetAllEmployeesByRole("All");
                     Choice = MenuChoice.EmployeeMenu;
                     break;
@@ -96,6 +100,16 @@ internal class MenuManager
                 case MenuChoice.CreateEmployee:
                     DbM.AddPerson(Choice);
                     Choice = MenuChoice.Registration;
+                    break;
+
+                case MenuChoice.AddGrade: //not implemented
+                    DbM.AddGrade();
+                    Choice = MenuChoice.Registration;
+                    break;
+
+                case MenuChoice.Salary:
+                    DbM.GetSalaryPerRole();
+                    Choice = MenuChoice.EmployeeMenu;
                     break;
 
                 case MenuChoice.Back:
