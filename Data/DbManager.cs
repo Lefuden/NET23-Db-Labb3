@@ -58,25 +58,14 @@ internal class DbManager
     public int GetRoleId() //testing different approach compared to GetClassId();
     {
         var roleTitle = UserInterface.GenericMenu(GetAllEmployeeRoles(), "Select role:");
-        int roleId;
-        switch (roleTitle)
+        int roleId = roleTitle switch
         {
-            case "Teacher":
-                roleId = 1;
-                break;
-            case "Principal":
-                roleId = 2;
-                break;
-            case "Janitor":
-                roleId = 3;
-                break;
-            case "Administrator":
-                roleId = 4;
-                break;
-            default:
-                roleId = 5;
-                break;
-        }
+            "Teacher" => 1,
+            "Principal" => 2,
+            "Janitor" => 3,
+            "Administrator" => 4,
+            _ => 5
+        };
 
         Console.WriteLine($"getting role id for {roleTitle}: {roleId}");
         Console.ReadKey();
@@ -149,6 +138,7 @@ internal class DbManager
             Context.SaveChanges();
             transaction.Commit();
             AnsiConsole.WriteLine("A new grade has been registered");
+            Console.ReadKey();
         }
         catch (Exception e)
         {
