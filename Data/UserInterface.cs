@@ -23,6 +23,20 @@ internal class UserInterface
         return ConvertToMenuChoice(choice);
     }
 
+    public static MenuChoice EmployeeMenu()
+    {
+        AnsiConsole.Clear();
+        var choice = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            .Title("Employee menu")
+            .AddChoices(new[]
+                {
+                    "Departments",
+                    "Salary",
+                    "Back"
+                }
+            ));
+        return ConvertToMenuChoice(choice);
+    }
     public static MenuChoice ViewEmployeesMenu()
     {
         AnsiConsole.Clear();
@@ -58,16 +72,6 @@ internal class UserInterface
         return ConvertToMenuChoice(choice);
     }
 
-    public static string ClassMenu(List<string> choiceList)
-    {
-        AnsiConsole.Clear();
-        var choice = AnsiConsole.Prompt(new SelectionPrompt<string>()
-            .Title("Select class:")
-            .AddChoices(choiceList)
-        );
-        return choice;
-    }
-
     public static string CourseMenu()
     {
         AnsiConsole.Clear();
@@ -75,16 +79,18 @@ internal class UserInterface
             .Title("Select what courses to view:")
             .AddChoices(new []
             {
-                "All", "Active", "Inactive",
+                "All", 
+                "Active", 
+                "Inactive",
             }));
         return choice;
     }
 
-    public static string RoleMenu(List<string> choiceList) //work in progress, use with AccountCreation
+    public static string GenericMenu(List<string> choiceList, string message)
     {
         AnsiConsole.Clear();
         var choice = AnsiConsole.Prompt(new SelectionPrompt<string>()
-            .Title("Select role:")
+            .Title(message)
             .AddChoices(choiceList)
         );
         return choice;
@@ -99,6 +105,7 @@ internal class UserInterface
                 {
                     "New student",
                     "New employee",
+                    "Add grade",
                     "Back"
                 }
             ));
@@ -128,6 +135,9 @@ internal class UserInterface
             "First name, descending" => MenuChoice.FirstNameDesc,
             "Last name, ascending" => MenuChoice.LastNameAsc,
             "Last name, descending" => MenuChoice.LastNameDesc,
+            "Departments" => MenuChoice.Departments,
+            "Salary" => MenuChoice.Salary,
+            "Add grade" => MenuChoice.AddGrade,
             _ => MenuChoice.Oopsie
         };
     }
